@@ -1,4 +1,4 @@
-# so_very_good
+# SoVeryGood
 
 A new Flutter project.
 
@@ -18,3 +18,4 @@ This project will help you build a SVG image using your phone or tablet.
 
 This project generates localized messages based on arb files found in
 the `lib/src/localization` directory.
+
