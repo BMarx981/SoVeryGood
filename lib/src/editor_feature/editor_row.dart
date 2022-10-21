@@ -4,22 +4,20 @@ import 'package:so_very_good/src/editor_feature/editor_repository.dart';
 
 class EditorRow extends ConsumerWidget {
   const EditorRow({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    bool panOn = ref.watch(panOnProvider);
+    final pan = ref.watch(panOnStateProvider);
     return Row(children: [
       Semantics(
         button: true,
         value: "Zoom button",
         child: GestureDetector(
           onTap: () {
-            ref.read(panOnProvider.state).state =
-                !ref.read(panOnProvider.state).state;
+            ref.read(panOnStateProvider.notifier).togglePan();
           },
           child: Icon(
             Icons.search,
-            color: panOn ? Colors.black : Colors.grey,
+            color: pan ? Colors.black : Colors.grey,
           ),
         ),
       ),
@@ -27,6 +25,7 @@ class EditorRow extends ConsumerWidget {
         child: const Icon(Icons.circle_outlined),
         onTap: () {
           debugPrint("Circle pressed");
+          ref.read(imageObjectProvider.notifier).addWidget();
         },
       ),
       IconButton(

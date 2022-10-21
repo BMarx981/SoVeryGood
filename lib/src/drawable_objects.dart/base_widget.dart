@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-class BaseWidget extends ConsumerStatefulWidget {
+class BaseWidget extends StatefulWidget {
   const BaseWidget({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _BaseWidgetState();
+  State<StatefulWidget> createState() => _BaseWidgetState();
 }
 
-class _BaseWidgetState extends ConsumerState<BaseWidget> {
+class _BaseWidgetState extends State<BaseWidget> {
   double xPosition = 0;
   double yPosition = 0;
+  String shape =
+      '<svg width="200" height="250" version="1.1" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50" fill="red"/></svg>';
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +26,7 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
               yPosition += details.delta.dy;
             });
           },
-          child: const SizedBox(
-              height: 100, width: 100, child: Text("Say something"))),
+          child: SvgPicture.string(shape)),
     );
   }
 }

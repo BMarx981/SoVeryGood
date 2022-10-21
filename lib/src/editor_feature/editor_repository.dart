@@ -1,27 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:so_very_good/src/drawable_objects.dart/base_widget.dart';
 
-class ImageObjectsRepository {
-  List<Widget> _widgets = [];
+class ImageObjectsList extends StateNotifier<List<Widget>> {
+  ImageObjectsList() : super(const []);
 
-  getWidgets() => _widgets;
   addWidget() {
-    _widgets.add(const BaseWidget());
+    debugPrint("Widget added ${state.length}");
+    state = [...state, const BaseWidget()];
   }
 }
 
-final panOnProvider = StateProvider<bool>((ref) => true);
-final imageObjectRepositoryProvider = Provider<ImageObjectsRepository>((ref) {
-  return ImageObjectsRepository();
+final imageObjectProvider =
+    StateNotifierProvider<ImageObjectsList, List<Widget>>((ref) {
+  return ImageObjectsList();
 });
 
-final imageObjectListProvider = Provider<List<Widget>>((ref) {
-  final list = ref.watch(imageObjectRepositoryProvider);
-  return list.getWidgets();
-});
+class PanOn extends StateNotifier<bool> {
+  bool _panOn = false;
 
-final imageObjectListAddProvider = Provider<List<Widget>>((ref) {
-  final list = ref.watch(imageObjectRepositoryProvider);
-  return list.addWidget();
-});
+  PanOn() : super(false);
+  togglePan() {
+    _panOn = !_panOn;
+    state = _panOn;
+  }
+
+  bool get pan => _panOn;
+}
+
+final panOnStateProvider = StateNotifierProvider<PanOn, bool>((ref) => PanOn());
