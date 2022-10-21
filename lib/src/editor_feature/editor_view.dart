@@ -17,23 +17,25 @@ class EditorView extends ConsumerWidget {
       appBar: AppBar(
         title: const Text("Editor"),
       ),
-      body: Column(
-        children: [
-          const EditorRow(),
-          Expanded(
-            child: InteractiveViewer(
-              panEnabled: pan,
-              scaleEnabled: pan,
-              maxScale: 7,
-              minScale: .4,
-              scaleFactor: 100,
-              child: Stack(
-                children: [for (final item in listProvider) item],
+      body: SafeArea(
+        child: Column(
+          children: [
+            const EditorRow(),
+            Expanded(
+              child: InteractiveViewer(
+                panEnabled: pan,
+                scaleEnabled: pan,
+                maxScale: 7,
+                minScale: .4,
+                scaleFactor: 100,
+                child: Stack(
+                  children: [for (final item in listProvider) item],
+                ),
               ),
             ),
-          ),
-          // const Expanded(child: CanvasView()),
-        ],
+            // const Expanded(child: CanvasView()),
+          ],
+        ),
       ),
     );
   }
