@@ -1,14 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:so_very_good/src/drawable_objects.dart/base_widget.dart';
 
 class ImageObjectsList extends StateNotifier<List<Widget>> {
   ImageObjectsList() : super(const []);
 
-  addWidget() {
-    debugPrint("Widget added ${state.length}");
-    state = [...state, const BaseWidget()];
+  addWidget(ShapeNames shape) {
+    Widget widgetShape = Container();
+    switch (shape) {
+      case ShapeNames.circle:
+        widgetShape = const BaseWidget(shape: ShapeNames.circle);
+        break;
+      case ShapeNames.rectangle:
+        widgetShape = const BaseWidget(shape: ShapeNames.rectangle);
+        break;
+      case ShapeNames.ellipse:
+        widgetShape = const BaseWidget(shape: ShapeNames.ellipse);
+        break;
+      case ShapeNames.line:
+        widgetShape = const BaseWidget(shape: ShapeNames.line);
+        break;
+      case ShapeNames.polyline:
+        widgetShape = const BaseWidget(shape: ShapeNames.polyline);
+        break;
+      case ShapeNames.path:
+        widgetShape = const BaseWidget(shape: ShapeNames.path);
+        break;
+      case ShapeNames.polygon:
+        widgetShape = const BaseWidget(shape: ShapeNames.polygon);
+        break;
+      default:
+        break;
+    }
+    state = [...state, widgetShape];
   }
 }
 
