@@ -8,10 +8,11 @@ final goRouter = GoRouter(
   initialLocation: '/',
   debugLogDiagnostics: false,
   routes: [
-    // GoRoute(
-    //   path: '/',
-    //   name: AppRoute.home.name,
-    // ),
+    GoRoute(
+      path: 'save',
+      name: AppRoute.home.name,
+      builder: (context, state) =>
+    ),
     GoRoute(
       path: '/',
       name: AppRoute.editor.name,

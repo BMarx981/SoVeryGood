@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:so_very_good/src/editor_feature/editor_repository.dart';
 import 'package:so_very_good/src/editor_feature/editor_row.dart';
 
@@ -10,13 +11,18 @@ class EditorView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    bool pan = true;
+    bool pan = ref.watch(panOnStateProvider);
     List<Widget> listProvider = ref.watch(imageObjectProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Editor"),
-      ),
+      appBar: AppBar(title: const Text("Editor"), actions: [
+        IconButton(
+          icon: const Icon(Icons.save_outlined),
+          onPressed: () {
+            GoRouter.of(context).go('/save');
+          },
+        ),
+      ]),
       body: SafeArea(
         child: Column(
           children: [
