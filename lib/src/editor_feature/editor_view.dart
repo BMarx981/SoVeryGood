@@ -4,8 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:so_very_good/src/editor_feature/editor_repository.dart';
 import 'package:so_very_good/src/editor_feature/editor_row.dart';
 
-import '../drawable_objects.dart/base_widget.dart';
-
 class EditorView extends ConsumerWidget {
   const EditorView({Key? key}) : super(key: key);
 
@@ -16,11 +14,15 @@ class EditorView extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text("Editor"), actions: [
-        IconButton(
-          icon: const Icon(Icons.save_outlined),
-          onPressed: () {
-            GoRouter.of(context).go('/save');
-          },
+        Semantics(
+          button: true,
+          value: "Save button",
+          child: IconButton(
+            icon: const Icon(Icons.save_outlined),
+            onPressed: () {
+              GoRouter.of(context).go('/save');
+            },
+          ),
         ),
       ]),
       body: SafeArea(

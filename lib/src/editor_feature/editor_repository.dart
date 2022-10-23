@@ -1,33 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:so_very_good/src/drawable_objects.dart/base_widget.dart';
+import 'package:so_very_good/src/drawable_objects.dart/circle.dart';
 
 class ImageObjectsList extends StateNotifier<List<Widget>> {
   ImageObjectsList() : super(const []);
+
+  // deleteItem(String id) {
+  //   state = [
+  //     for (final item in state)
+  //       if (item.id != id) item
+  //   ];
+  // }
 
   addWidget(ShapeNames shape) {
     Widget widgetShape = Container();
     switch (shape) {
       case ShapeNames.circle:
-        widgetShape = const BaseWidget(shape: ShapeNames.circle);
+        CircleSVG shape = CircleSVG();
+        widgetShape = shape.getShapeWidget();
         break;
       case ShapeNames.rectangle:
-        widgetShape = const BaseWidget(shape: ShapeNames.rectangle);
+        widgetShape = BaseWidget(shape: ShapeNames.rectangle);
         break;
       case ShapeNames.ellipse:
-        widgetShape = const BaseWidget(shape: ShapeNames.ellipse);
+        widgetShape = BaseWidget(shape: ShapeNames.ellipse);
         break;
       case ShapeNames.line:
-        widgetShape = const BaseWidget(shape: ShapeNames.line);
+        widgetShape = BaseWidget(shape: ShapeNames.line);
         break;
       case ShapeNames.polyline:
-        widgetShape = const BaseWidget(shape: ShapeNames.polyline);
+        widgetShape = BaseWidget(shape: ShapeNames.polyline);
         break;
       case ShapeNames.path:
-        widgetShape = const BaseWidget(shape: ShapeNames.path);
+        widgetShape = BaseWidget(shape: ShapeNames.path);
         break;
       case ShapeNames.polygon:
-        widgetShape = const BaseWidget(shape: ShapeNames.polygon);
+        widgetShape = BaseWidget(shape: ShapeNames.polygon);
         break;
       default:
         break;

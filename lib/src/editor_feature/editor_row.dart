@@ -23,50 +23,95 @@ class EditorRow extends ConsumerWidget {
           ),
         ),
       ),
-      GestureDetector(
-        child: const Icon(Icons.circle_outlined),
-        onTap: () {
-          debugPrint("Circle pressed");
-          ref.read(imageObjectProvider.notifier).addWidget(ShapeNames.circle);
-        },
+      Semantics(
+        button: true,
+        value: "Circle button",
+        child: GestureDetector(
+          child: const Icon(Icons.circle_outlined),
+          onTap: () {
+            ref.read(imageObjectProvider.notifier).addWidget(ShapeNames.circle);
+          },
+        ),
       ),
-      IconButton(
-        icon: const Icon(Icons.rectangle_outlined),
-        onPressed: () {
-          debugPrint("Rectangle pressed");
-          ref
-              .read(imageObjectProvider.notifier)
-              .addWidget(ShapeNames.rectangle);
-        },
+      Semantics(
+        button: true,
+        value: "Rectangle button",
+        child: IconButton(
+          icon: const Icon(Icons.rectangle_outlined),
+          onPressed: () {
+            ref
+                .read(imageObjectProvider.notifier)
+                .addWidget(ShapeNames.rectangle);
+          },
+        ),
       ),
-      IconButton(
-        icon: const Icon(Icons.circle_outlined),
-        onPressed: () {
-          debugPrint("Ellipse pressed");
-          ref.read(imageObjectProvider.notifier).addWidget(ShapeNames.ellipse);
-        },
+      Semantics(
+        button: true,
+        value: "Ellipse button",
+        child: IconButton(
+          icon: const Icon(Icons.circle_outlined),
+          onPressed: () {
+            ref
+                .read(imageObjectProvider.notifier)
+                .addWidget(ShapeNames.ellipse);
+          },
+        ),
       ),
-      IconButton(
-        //TODO : find a better icon for line.
-        icon: const Icon(Icons.line_axis),
-        onPressed: () {
-          debugPrint("Line pressed");
-          ref.read(imageObjectProvider.notifier).addWidget(ShapeNames.line);
-        },
+      Semantics(
+        button: true,
+        value: "Line button",
+        child: IconButton(
+          //TODO : find a better icon for line.
+          icon: const Icon(Icons.line_axis),
+          onPressed: () {
+            ref.read(imageObjectProvider.notifier).addWidget(ShapeNames.line);
+          },
+        ),
       ),
-      IconButton(
-        icon: const Icon(Icons.polyline),
-        onPressed: () {
-          debugPrint("Rectangle pressed");
-          ref.read(imageObjectProvider.notifier).addWidget(ShapeNames.polyline);
-        },
+      Semantics(
+        button: true,
+        value: "Polyline button",
+        child: IconButton(
+          icon: const Icon(Icons.polyline),
+          onPressed: () {
+            ref
+                .read(imageObjectProvider.notifier)
+                .addWidget(ShapeNames.polyline);
+          },
+        ),
       ),
-      IconButton(
-        icon: const Icon(Icons.pattern_sharp),
-        onPressed: () {
-          debugPrint("Rectangle pressed");
-          ref.read(imageObjectProvider.notifier).addWidget(ShapeNames.path);
-        },
+      Semantics(
+        button: true,
+        value: "path button",
+        child: IconButton(
+          icon: const Icon(Icons.pattern_sharp),
+          onPressed: () {
+            debugPrint("Rectangle pressed");
+            ref.read(imageObjectProvider.notifier).addWidget(ShapeNames.path);
+          },
+        ),
+      ),
+      Semantics(
+        button: true,
+        value: "Polygon button",
+        child: IconButton(
+          icon: const Icon(Icons.rectangle_outlined),
+          onPressed: () {
+            ref
+                .read(imageObjectProvider.notifier)
+                .addWidget(ShapeNames.polygon);
+          },
+        ),
+      ),
+      Semantics(
+        button: true,
+        value: "Delete button",
+        child: IconButton(
+          icon: const Icon(Icons.delete),
+          onPressed: () {
+            // ref.read(imageObjectProvider.notifier).deleteItem();
+          },
+        ),
       ),
     ]);
   }

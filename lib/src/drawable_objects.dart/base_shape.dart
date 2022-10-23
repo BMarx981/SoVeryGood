@@ -4,4 +4,5 @@ class BaseShape {
   int strokeWidth = 0;
   String stroke = "";
   String fill = "";
+  String fillOpacity = "";
 }

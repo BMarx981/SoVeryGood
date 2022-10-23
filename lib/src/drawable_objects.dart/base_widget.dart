@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:uuid/uuid.dart';
 
 enum ShapeNames {
   circle,
@@ -13,7 +14,8 @@ enum ShapeNames {
 
 class BaseWidget extends StatefulWidget {
   final ShapeNames shape;
-  const BaseWidget({super.key, required this.shape});
+  final String id = const Uuid().toString();
+  BaseWidget({super.key, required this.shape});
 
   @override
   State<StatefulWidget> createState() => _BaseWidgetState();
@@ -22,20 +24,22 @@ class BaseWidget extends StatefulWidget {
 class _BaseWidgetState extends State<BaseWidget> {
   double xPosition = 0;
   double yPosition = 0;
+  double width = 0;
+  double height = 0;
   final String svgTag =
-      '<svg width="200" height="250" version="1.1" xmlns="http://www.w3.org/2000/svg">';
-  String shape =
-      '<svg width="200" height="250" version="1.1" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50" fill="red"/></svg>';
+      '<svg width="100" height="100" version="1.1" xmlns="http://www.w3.org/2000/svg">';
+  String shape = '<circle cx="50" cy="50" r="50" fill="red"/></svg>';
 
   @override
   void initState() {
     switch (widget.shape) {
       case ShapeNames.circle:
-        shape = '$svgTag<circle cx="50" cy="50" r="50" fill="red"/></svg>';
+        shape =
+            '$svgTag<circle cx="50" cy="50" r="50" fill="red" fill-opacity=".5"/></svg>';
         break;
       case ShapeNames.rectangle:
         shape =
-            '$svgTag<rect x="60" y="10" rx="10" ry="10" width="30" height="30"/></svg>';
+            '$svgTag<rect x="0" y="0"  rx="2" width="50" height="50"/></svg>';
         break;
       case ShapeNames.ellipse:
         shape = '$svgTag<ellipse cx="75" cy="75" rx="20" ry="5"/></svg>';
@@ -65,14 +69,17 @@ class _BaseWidgetState extends State<BaseWidget> {
     return Positioned(
       left: xPosition,
       top: yPosition,
-      child: GestureDetector(
-          onPanUpdate: (details) {
-            setState(() {
-              xPosition += details.delta.dx;
-              yPosition += details.delta.dy;
-            });
-          },
-          child: SvgPicture.string(shape)),
+      child: Container(
+        decoration: BoxDecoration(border: Border.all()),
+        child: GestureDetector(
+            onPanUpdate: (details) {
+              setState(() {
+                xPosition += details.delta.dx;
+                yPosition += details.delta.dy;
+              });
+            },
+            child: SvgPicture.string(shape)),
+      ),
     );
   }
 }
