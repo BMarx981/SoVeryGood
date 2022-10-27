@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:so_very_good/src/editor_feature/editor_repository.dart';
 import 'package:uuid/uuid.dart';
 
 enum ShapeNames {
@@ -12,20 +14,21 @@ enum ShapeNames {
   path,
 }
 
-class BaseWidget extends StatefulWidget {
+class BaseWidget extends ConsumerStatefulWidget {
   final ShapeNames shape;
-  final String id = const Uuid().toString();
+  final String id = const Uuid().v1();
   BaseWidget({super.key, required this.shape});
 
   @override
-  State<StatefulWidget> createState() => _BaseWidgetState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _BaseWidgetState();
 }
 
-class _BaseWidgetState extends State<BaseWidget> {
+class _BaseWidgetState extends ConsumerState<BaseWidget> {
   double xPosition = 0;
   double yPosition = 0;
   double width = 0;
   double height = 0;
+  bool currentlySelected = false;
   final String svgTag =
       '<svg width="100" height="100" version="1.1" xmlns="http://www.w3.org/2000/svg">';
   String shape = '<circle cx="50" cy="50" r="50" fill="red"/></svg>';
@@ -66,12 +69,28 @@ class _BaseWidgetState extends State<BaseWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final imageObj = ref.watch(imageObjectProvider);
+    final selectedOn = ref.watch(selectionToolProvider.notifier);
     return Positioned(
       left: xPosition,
       top: yPosition,
       child: Container(
-        decoration: BoxDecoration(border: Border.all()),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: selectedOn.selection && currentlySelected
+                ? Colors.transparent
+                : Colors.black.withOpacity(.5),
+          ),
+        ),
         child: GestureDetector(
+            onTap: () {
+              if (selectedOn.selection && !currentlySelected) {
+                ref.read(imageObjectProvider.notifier).addToSelected(widget.id);
+              }
+              setState(() {
+                currentlySelected = !currentlySelected;
+              });
+            },
             onPanUpdate: (details) {
               setState(() {
                 xPosition += details.delta.dx;
