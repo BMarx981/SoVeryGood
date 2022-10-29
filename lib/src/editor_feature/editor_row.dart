@@ -10,7 +10,7 @@ class EditorRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pan = ref.watch(panOnStateProvider);
     final selectedOn = ref.watch(selectionToolProvider);
-    final selectedList = ref.watch(imageObjectProvider);
+    final selectedList = ref.watch(selectedProvider);
     return SizedBox(
       height: 50,
       child: ListView(
@@ -135,11 +135,13 @@ class EditorRow extends ConsumerWidget {
               button: true,
               value: "Delete button",
               child: IconButton(
-                icon: selectedOn && selectedList.isNotEmpty
+                icon: selectedOn && selectedList.notEmpty()
                     ? const Icon(Icons.delete)
                     : const Icon(Icons.delete_outline),
                 onPressed: () {
-                  // ref.read(imageObjectProvider.notifier).deleteItem();
+                  ref
+                      .read(imageObjectProvider.notifier)
+                      .deleteItems(selectedList.selected);
                 },
               ),
             ),

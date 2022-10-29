@@ -14,6 +14,13 @@ class ImageObjectsList extends StateNotifier<List<BaseWidget>> {
     return s;
   }
 
+  deleteItems(List<String> list) {
+    for (final str in list) {
+      // state = state.where((item) => item.id != str).toList();
+      deleteItem(str);
+    }
+  }
+
   deleteItem(String id) {
     state = [
       for (final item in state)
@@ -28,29 +35,30 @@ class ImageObjectsList extends StateNotifier<List<BaseWidget>> {
   }
 
   addWidget(ShapeNames shape) {
-    BaseWidget widgetShape = BaseWidget(shape: ShapeNames.rectangle);
+    BaseWidget widgetShape =
+        BaseWidget(key: UniqueKey(), shape: ShapeNames.rectangle);
     switch (shape) {
       case ShapeNames.circle:
         CircleSVG shape = CircleSVG();
         widgetShape = shape.getShapeWidget();
         break;
       case ShapeNames.rectangle:
-        widgetShape = BaseWidget(shape: ShapeNames.rectangle);
+        widgetShape = BaseWidget(key: UniqueKey(), shape: ShapeNames.rectangle);
         break;
       case ShapeNames.ellipse:
-        widgetShape = BaseWidget(shape: ShapeNames.ellipse);
+        widgetShape = BaseWidget(key: UniqueKey(), shape: ShapeNames.ellipse);
         break;
       case ShapeNames.line:
-        widgetShape = BaseWidget(shape: ShapeNames.line);
+        widgetShape = BaseWidget(key: UniqueKey(), shape: ShapeNames.line);
         break;
       case ShapeNames.polyline:
-        widgetShape = BaseWidget(shape: ShapeNames.polyline);
+        widgetShape = BaseWidget(key: UniqueKey(), shape: ShapeNames.polyline);
         break;
       case ShapeNames.path:
-        widgetShape = BaseWidget(shape: ShapeNames.path);
+        widgetShape = BaseWidget(key: UniqueKey(), shape: ShapeNames.path);
         break;
       case ShapeNames.polygon:
-        widgetShape = BaseWidget(shape: ShapeNames.polygon);
+        widgetShape = BaseWidget(key: UniqueKey(), shape: ShapeNames.polygon);
         break;
       default:
         break;
@@ -61,27 +69,33 @@ class ImageObjectsList extends StateNotifier<List<BaseWidget>> {
 }
 
 final imageObjectProvider =
-    StateNotifierProvider<ImageObjectsList, List<Widget>>((ref) {
-  final selectIds = ref.watch(selectedProvider);
-
+    StateNotifierProvider.autoDispose<ImageObjectsList, List<Widget>>((ref) {
   return ImageObjectsList();
 });
 
+//The selected list provider
 class SelectedId {
   List<String> selected = [];
 
   addSelected(String id) {
     selected.add(id);
-    debugPrint(id);
+    debugPrint(selected.toString());
   }
 
   clearSelected() {
     selected.clear();
   }
+
+  bool notEmpty() {
+    return selected.isNotEmpty;
+  }
 }
 
-final selectedProvider = Provider<SelectedId>((ref) => SelectedId());
+final selectedProvider = Provider<SelectedId>((ref) {
+  return SelectedId();
+});
 
+//Selection tool provider
 class SelectionTool extends StateNotifier<bool> {
   bool _selectedOn = false;
 
@@ -97,6 +111,7 @@ class SelectionTool extends StateNotifier<bool> {
 final selectionToolProvider =
     StateNotifierProvider<SelectionTool, bool>((ref) => SelectionTool());
 
+//Pan on off Provider
 class PanOn extends StateNotifier<bool> {
   bool _panOn = false;
 

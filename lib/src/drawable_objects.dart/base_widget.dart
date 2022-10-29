@@ -17,7 +17,7 @@ enum ShapeNames {
 class BaseWidget extends ConsumerStatefulWidget {
   final ShapeNames shape;
   final String id = const Uuid().v1();
-  BaseWidget({super.key, required this.shape});
+  BaseWidget({required key, required this.shape}) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _BaseWidgetState();
