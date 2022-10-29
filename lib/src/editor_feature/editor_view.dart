@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:so_very_good/src/editor_feature/editor_repository.dart';
 import 'package:so_very_good/src/editor_feature/editor_row.dart';
 
+import '../drawable_objects.dart/base_widget.dart';
+
 class EditorView extends ConsumerWidget {
   const EditorView({Key? key}) : super(key: key);
 
@@ -37,7 +39,7 @@ class EditorView extends ConsumerWidget {
                 minScale: .4,
                 scaleFactor: 100,
                 child: Stack(
-                  children: [for (final item in listProvider) item],
+                  children: listProvider,
                 ),
               ),
             ),

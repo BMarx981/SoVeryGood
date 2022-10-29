@@ -5,20 +5,13 @@ import 'package:so_very_good/src/drawable_objects.dart/circle.dart';
 
 class ImageObjectsList extends StateNotifier<List<BaseWidget>> {
   ImageObjectsList() : super(const []);
-  List<String> selected = [];
 
-  clearSelected() => selected.clear();
-
-  addToSelected(String id) {
-    selected.add(id);
-  }
-
-  deleteItems() {
-    for (final element in selected) {
-      debugPrint("Element: $element");
-      deleteItem(element);
+  String dPrint(List<BaseWidget> list) {
+    String s = " list :";
+    for (final ele in list) {
+      s += ' ${ele.id.toString().substring(0, 8)} ';
     }
-    selected.clear();
+    return s;
   }
 
   deleteItem(String id) {
@@ -63,14 +56,31 @@ class ImageObjectsList extends StateNotifier<List<BaseWidget>> {
         break;
     }
     state = [...state, widgetShape];
-    debugPrint(state.length.toString());
+    // debugPrint(widgetShape.id.toString());
   }
 }
 
 final imageObjectProvider =
     StateNotifierProvider<ImageObjectsList, List<Widget>>((ref) {
+  final selectIds = ref.watch(selectedProvider);
+
   return ImageObjectsList();
 });
+
+class SelectedId {
+  List<String> selected = [];
+
+  addSelected(String id) {
+    selected.add(id);
+    debugPrint(id);
+  }
+
+  clearSelected() {
+    selected.clear();
+  }
+}
+
+final selectedProvider = Provider<SelectedId>((ref) => SelectedId());
 
 class SelectionTool extends StateNotifier<bool> {
   bool _selectedOn = false;

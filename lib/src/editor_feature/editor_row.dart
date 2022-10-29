@@ -39,7 +39,6 @@ class EditorRow extends ConsumerWidget {
                   ref
                       .read(imageObjectProvider.notifier)
                       .addWidget(ShapeNames.circle);
-                  ref.read(imageObjectProvider.notifier).showUuids();
                 },
               ),
             ),
@@ -126,6 +125,9 @@ class EditorRow extends ConsumerWidget {
                     : const Icon(Icons.back_hand_outlined),
                 onPressed: () {
                   ref.read(selectionToolProvider.notifier).toggleSelection();
+                  if (!selectedOn) {
+                    ref.read(selectedProvider).clearSelected();
+                  }
                 },
               ),
             ),
@@ -137,7 +139,7 @@ class EditorRow extends ConsumerWidget {
                     ? const Icon(Icons.delete)
                     : const Icon(Icons.delete_outline),
                 onPressed: () {
-                  ref.read(imageObjectProvider.notifier).deleteItems();
+                  // ref.read(imageObjectProvider.notifier).deleteItem();
                 },
               ),
             ),

@@ -69,35 +69,45 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final imageObj = ref.watch(imageObjectProvider);
-    final selectedOn = ref.watch(selectionToolProvider.notifier);
+    final selectedOn = ref.watch(selectionToolProvider);
+    if (!selectedOn) {
+      setState(() => currentlySelected = false);
+    }
     return Positioned(
       left: xPosition,
       top: yPosition,
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
-            color: selectedOn.selection && currentlySelected
-                ? Colors.transparent
-                : Colors.black.withOpacity(.5),
+            color: selectedOn && currentlySelected
+                ? Colors.black.withOpacity(.5)
+                : Colors.transparent,
           ),
         ),
         child: GestureDetector(
-            onTap: () {
-              if (selectedOn.selection && !currentlySelected) {
-                ref.read(imageObjectProvider.notifier).addToSelected(widget.id);
-              }
-              setState(() {
-                currentlySelected = !currentlySelected;
-              });
-            },
-            onPanUpdate: (details) {
-              setState(() {
-                xPosition += details.delta.dx;
-                yPosition += details.delta.dy;
-              });
-            },
-            child: SvgPicture.string(shape)),
+          onTap: () {
+            setState(() {
+              currentlySelected = !currentlySelected;
+            });
+            if (selectedOn && currentlySelected) {
+              ref.read(selectedProvider).addSelected(widget.id);
+            }
+          },
+          onPanUpdate: (details) {
+            setState(() {
+              xPosition += details.delta.dx;
+              yPosition += details.delta.dy;
+            });
+          },
+          child: Column(
+            children: [
+              // Text(
+              //     "${xPosition.toStringAsFixed(1)} ${yPosition.toStringAsFixed(1)}"),
+              SvgPicture.string(shape),
+              // Text(widget.id.toString().substring(0, 8)),
+            ],
+          ),
+        ),
       ),
     );
   }
