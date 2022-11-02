@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -26,8 +28,13 @@ class BaseWidget extends ConsumerStatefulWidget {
 class _BaseWidgetState extends ConsumerState<BaseWidget> {
   double xPosition = 0;
   double yPosition = 0;
+  double rotation = 0;
   double width = 0;
   double height = 0;
+  double scale = 0.0;
+  double lastRotation = 0;
+  Offset xpos = Offset.zero;
+  Offset ypos = Offset.zero;
   bool currentlySelected = false;
   final String svgTag =
       '<svg width="100" height="100" version="1.1" xmlns="http://www.w3.org/2000/svg">';
@@ -45,7 +52,7 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
             '$svgTag<rect x="0" y="0"  rx="2" width="50" height="50"/></svg>';
         break;
       case ShapeNames.ellipse:
-        shape = '$svgTag<ellipse cx="75" cy="75" rx="20" ry="5"/></svg>';
+        shape = '$svgTag<ellipse cx="50" cy="50" rx="50" ry="100"/></svg>';
         break;
       case ShapeNames.line:
         shape =
@@ -84,31 +91,42 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
                 : Colors.transparent,
           ),
         ),
-        child: GestureDetector(
-          onTap: () {
-            setState(() {
-              currentlySelected = !currentlySelected;
-            });
-            if (selectedOn && currentlySelected) {
-              ref.read(selectedProvider).addSelected(widget.id);
-            }
-          },
-          onPanUpdate: (details) {
-            setState(() {
-              xPosition += details.delta.dx;
-              yPosition += details.delta.dy;
-            });
-          },
-          child: Column(
-            children: [
-              // Text(
-              //     "${xPosition.toStringAsFixed(1)} ${yPosition.toStringAsFixed(1)}"),
-              SvgPicture.string(shape),
-              // Text(widget.id.toString().substring(0, 8)),
-            ],
+        child: Transform.rotate(
+          alignment: FractionalOffset.center,
+          angle: rotation / 3.14,
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                currentlySelected = !currentlySelected;
+              });
+              if (selectedOn && currentlySelected) {
+                ref.read(selectedProvider).addSelected(widget.id);
+              }
+            },
+            onScaleUpdate: (details) {
+              setState(() {
+                rotation = details.rotation + rotation;
+                debugPrint(rotation.toString());
+                final offset = details.focalPoint;
+
+                yPosition += details.focalPointDelta.dy;
+                xPosition += details.focalPointDelta.dx;
+                scale = details.scale;
+              });
+            },
+            onLongPress: () {
+              longPressed();
+            },
+            child: Column(
+              children: [
+                SvgPicture.string(shape),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+
+  longPressed() {}
 }

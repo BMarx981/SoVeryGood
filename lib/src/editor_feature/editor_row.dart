@@ -11,6 +11,7 @@ class EditorRow extends ConsumerWidget {
     final pan = ref.watch(panOnStateProvider);
     final selectedOn = ref.watch(selectionToolProvider);
     final selectedList = ref.watch(selectedProvider);
+    final notEmpty = ref.watch(notEmptySelectedListProvider);
     return SizedBox(
       height: 50,
       child: ListView(
@@ -36,6 +37,7 @@ class EditorRow extends ConsumerWidget {
               child: GestureDetector(
                 child: const Icon(Icons.circle_outlined),
                 onTap: () {
+                  debugPrint("Tapped");
                   ref
                       .read(imageObjectProvider.notifier)
                       .addWidget(ShapeNames.circle);
@@ -135,7 +137,7 @@ class EditorRow extends ConsumerWidget {
               button: true,
               value: "Delete button",
               child: IconButton(
-                icon: selectedOn && selectedList.notEmpty()
+                icon: selectedOn && notEmpty
                     ? const Icon(Icons.delete)
                     : const Icon(Icons.delete_outline),
                 onPressed: () {

@@ -6,17 +6,8 @@ import 'package:so_very_good/src/drawable_objects.dart/circle.dart';
 class ImageObjectsList extends StateNotifier<List<BaseWidget>> {
   ImageObjectsList() : super(const []);
 
-  String dPrint(List<BaseWidget> list) {
-    String s = " list :";
-    for (final ele in list) {
-      s += ' ${ele.id.toString().substring(0, 8)} ';
-    }
-    return s;
-  }
-
   deleteItems(List<String> list) {
     for (final str in list) {
-      // state = state.where((item) => item.id != str).toList();
       deleteItem(str);
     }
   }
@@ -26,12 +17,6 @@ class ImageObjectsList extends StateNotifier<List<BaseWidget>> {
       for (final item in state)
         if (item.id != id) item
     ];
-  }
-
-  showUuids() {
-    for (BaseWidget b in state) {
-      debugPrint(b.id.toString());
-    }
   }
 
   addWidget(ShapeNames shape) {
@@ -64,7 +49,6 @@ class ImageObjectsList extends StateNotifier<List<BaseWidget>> {
         break;
     }
     state = [...state, widgetShape];
-    // debugPrint(widgetShape.id.toString());
   }
 }
 
@@ -79,7 +63,6 @@ class SelectedId {
 
   addSelected(String id) {
     selected.add(id);
-    debugPrint(selected.toString());
   }
 
   clearSelected() {
@@ -93,6 +76,11 @@ class SelectedId {
 
 final selectedProvider = Provider<SelectedId>((ref) {
   return SelectedId();
+});
+
+final notEmptySelectedListProvider = Provider<bool>((ref) {
+  final selectionProvider = ref.watch(selectedProvider);
+  return selectionProvider.selected.isNotEmpty;
 });
 
 //Selection tool provider
