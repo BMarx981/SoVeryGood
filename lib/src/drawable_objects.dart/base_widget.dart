@@ -38,9 +38,6 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
 
   final degreesOverPi = (180 / math.pi);
 
-  Offset _initialFocalPoint = Offset.zero;
-  Offset _sessionOffset = Offset.zero;
-
   String svgTag =
       '<svg width="100" height="100" version="1.1" xmlns="http://www.w3.org/2000/svg">';
   String shape = '<circle cx="50" cy="50" r="50" fill="red"/></svg>';
@@ -53,7 +50,7 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
             '<circle cx="50" cy="50" r="50" fill="red" fill-opacity=".5"/></svg>';
         break;
       case ShapeNames.rectangle:
-        shape = '<rect x="0" y="0"  rx="2" width="50" height="50"/></svg>';
+        shape = '<rect x="0" y="0"  rx="2" width="100" height="100"/></svg>';
         break;
       case ShapeNames.ellipse:
         shape = '<ellipse cx="50" cy="50" rx="50" ry="100"/></svg>';
@@ -87,61 +84,48 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
     return Positioned(
       left: xPosition,
       top: yPosition,
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            currentlySelected = !currentlySelected;
-          });
-          if (selectedOn && currentlySelected) {
-            ref.read(selectedProvider).addSelected(widget.id);
-          }
-        },
-        onScaleStart: (details) {
-          _initialFocalPoint = details.focalPoint;
-        },
-        onScaleEnd: (details) {
-          setState(() {
-            _sessionOffset = Offset.zero;
-          });
-        },
-        onScaleUpdate: (details) {
-          int count = details.pointerCount;
-          debugPrint(count.toString());
-          if (count > 1) {
-            setState(() {
-              _sessionOffset = details.focalPoint - _initialFocalPoint;
-              // debugPrint(_sessionOffset.distance.toString());
-              _scale = details.scale;
-              // debugPrint('Scale = ${details.scale} X: ${_sessionOffset.dx} '
-              //     'Y:${_sessionOffset.dy}');
-              rotation = details.rotation * degreesOverPi;
-              debugPrint(rotation.toString());
-              if (details.focalPointDelta.dy != 0 ||
-                  details.focalPointDelta.dx != 0) {
-                yPosition += details.focalPointDelta.dy;
-                xPosition += details.focalPointDelta.dx;
+      child: Transform.scale(
+        scale: _scale,
+        child: Transform.rotate(
+          alignment: FractionalOffset.center,
+          angle: rotation,
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                debugPrint("Tapped");
+                currentlySelected = !currentlySelected;
+              });
+              if (selectedOn && currentlySelected) {
+                ref.read(selectedProvider).addSelected(widget.id);
               }
-            });
-          } else {
-            setState(() {
-              // rotation += details.rotation;
-              // debugPrint(rotation.toString());
-              // debugPrint(endRotation.toString());
-
-              yPosition += details.focalPointDelta.dy;
-              xPosition += details.focalPointDelta.dx;
-            });
-          }
-        },
-        onLongPress: () {
-          longPressed();
-        },
-        child: Transform.scale(
-          scale: _scale,
-          child: Transform.rotate(
-            // origin: _offset,
-            alignment: FractionalOffset.center,
-            angle: rotation,
+            },
+            onScaleUpdate: (details) {
+              int count = details.pointerCount;
+              if (count > 1) {
+                setState(() {
+                  _scale = details.scale;
+                  rotation = (details.rotation * degreesOverPi) / 6;
+                  debugPrint(rotation.toString());
+                  if (details.focalPointDelta.dy != 0 ||
+                      details.focalPointDelta.dx != 0) {
+                    yPosition += details.focalPointDelta.dy * _scale;
+                    xPosition += details.focalPointDelta.dx * _scale;
+                  }
+                });
+              } else if (count == 1) {
+                setState(() {
+                  debugPrint(
+                      "DX = ${(details.focalPointDelta.dx * _scale).toString()}");
+                  debugPrint(
+                      'Dy =  ${(details.focalPointDelta.dy * _scale).toString()}');
+                  yPosition += details.focalPointDelta.dy * _scale;
+                  xPosition += details.focalPointDelta.dx * _scale;
+                });
+              }
+            },
+            onLongPress: () {
+              longPressed();
+            },
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(
