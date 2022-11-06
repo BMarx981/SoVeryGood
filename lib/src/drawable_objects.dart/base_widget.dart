@@ -34,13 +34,12 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
   double lastRotation = 0;
   double endRotation = 0;
   bool currentlySelected = false;
+  double _scale = 1.0;
 
-  Offset _offset = Offset.zero;
+  final degreesOverPi = (180 / math.pi);
+
   Offset _initialFocalPoint = Offset.zero;
   Offset _sessionOffset = Offset.zero;
-
-  double _scale = 1.0;
-  double _initialScale = 1.0;
 
   String svgTag =
       '<svg width="100" height="100" version="1.1" xmlns="http://www.w3.org/2000/svg">';
@@ -99,29 +98,40 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
         },
         onScaleStart: (details) {
           _initialFocalPoint = details.focalPoint;
-          _initialScale = _scale;
         },
         onScaleEnd: (details) {
           setState(() {
-            _offset += _sessionOffset;
             _sessionOffset = Offset.zero;
           });
         },
         onScaleUpdate: (details) {
-          setState(() {
-            _sessionOffset = details.focalPoint - _initialFocalPoint;
-            debugPrint(_sessionOffset.distance.toString());
-            _scale = details.scale;
-            debugPrint('Scale = ${details.scale} X: ${_sessionOffset.dx} '
-                'Y:${_sessionOffset.dy}');
+          int count = details.pointerCount;
+          debugPrint(count.toString());
+          if (count > 1) {
+            setState(() {
+              _sessionOffset = details.focalPoint - _initialFocalPoint;
+              // debugPrint(_sessionOffset.distance.toString());
+              _scale = details.scale;
+              // debugPrint('Scale = ${details.scale} X: ${_sessionOffset.dx} '
+              //     'Y:${_sessionOffset.dy}');
+              rotation = details.rotation * degreesOverPi;
+              debugPrint(rotation.toString());
+              if (details.focalPointDelta.dy != 0 ||
+                  details.focalPointDelta.dx != 0) {
+                yPosition += details.focalPointDelta.dy;
+                xPosition += details.focalPointDelta.dx;
+              }
+            });
+          } else {
+            setState(() {
+              // rotation += details.rotation;
+              // debugPrint(rotation.toString());
+              // debugPrint(endRotation.toString());
 
-            // rotation += details.rotation;
-            // debugPrint(rotation.toString());
-            // debugPrint(endRotation.toString());
-
-            yPosition += details.focalPointDelta.dy;
-            xPosition += details.focalPointDelta.dx;
-          });
+              yPosition += details.focalPointDelta.dy;
+              xPosition += details.focalPointDelta.dx;
+            });
+          }
         },
         onLongPress: () {
           longPressed();
@@ -129,9 +139,9 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
         child: Transform.scale(
           scale: _scale,
           child: Transform.rotate(
-            origin: _offset,
+            // origin: _offset,
             alignment: FractionalOffset.center,
-            angle: endRotation,
+            angle: rotation,
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(
