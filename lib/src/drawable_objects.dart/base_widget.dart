@@ -105,7 +105,7 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
                 setState(() {
                   _scale = details.scale;
                   rotation = (details.rotation * degreesOverPi) / 6;
-                  debugPrint(rotation.toString());
+                  debugPrint('Rot = $rotation');
                   if (details.focalPointDelta.dy != 0 ||
                       details.focalPointDelta.dx != 0) {
                     yPosition += details.focalPointDelta.dy * _scale;
@@ -115,11 +115,11 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
               } else if (count == 1) {
                 setState(() {
                   debugPrint(
-                      "DX = ${(details.focalPointDelta.dx * _scale).toString()}");
+                      "DX = ${(details.focalPointDelta.dx).toString()} xpos = $xPosition");
                   debugPrint(
-                      'Dy =  ${(details.focalPointDelta.dy * _scale).toString()}');
-                  yPosition += details.focalPointDelta.dy * _scale;
-                  xPosition += details.focalPointDelta.dx * _scale;
+                      'Dy =  ${(details.focalPointDelta.dy).toString()} ypos = $yPosition');
+                  yPosition += details.focalPointDelta.dy;
+                  xPosition += details.focalPointDelta.dx;
                 });
               }
             },
