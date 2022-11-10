@@ -108,8 +108,12 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
                   debugPrint('Rot = $rotation');
                   if (details.focalPointDelta.dy != 0 ||
                       details.focalPointDelta.dx != 0) {
-                    yPosition += details.focalPointDelta.dy * _scale;
-                    xPosition += details.focalPointDelta.dx * _scale;
+                    yPosition += details.focalPointDelta.dy * _scale.abs();
+                    xPosition += details.focalPointDelta.dx * _scale.abs();
+                    debugPrint(
+                        "Scale $_scale DX = ${(details.focalPointDelta.dx).toString()} xpos = $xPosition");
+                    debugPrint(
+                        'Scale $_scale Dy =  ${(details.focalPointDelta.dy).toString()} ypos = $yPosition');
                   }
                 });
               } else if (count == 1) {
