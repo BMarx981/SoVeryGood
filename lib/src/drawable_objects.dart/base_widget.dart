@@ -101,8 +101,10 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
             },
             onScaleUpdate: (details) {
               int count = details.pointerCount;
+              double direction = details.focalPoint.direction;
               if (count > 1) {
                 setState(() {
+                  debugPrint("Direction $direction");
                   _scale = details.scale;
                   rotation = (details.rotation * degreesOverPi) / 6;
                   debugPrint('Rot = $rotation');
@@ -118,10 +120,11 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
                 });
               } else if (count == 1) {
                 setState(() {
+                  debugPrint("Direction $direction");
                   debugPrint(
-                      "DX = ${(details.focalPointDelta.dx).toString()} xpos = $xPosition");
+                      "Scale $_scale DX = ${(details.focalPointDelta.dx).toString()} xpos = $xPosition");
                   debugPrint(
-                      'Dy =  ${(details.focalPointDelta.dy).toString()} ypos = $yPosition');
+                      'Scale $_scale Dy =  ${(details.focalPointDelta.dy).toString()} ypos = $yPosition');
                   yPosition += details.focalPointDelta.dy;
                   xPosition += details.focalPointDelta.dx;
                 });
