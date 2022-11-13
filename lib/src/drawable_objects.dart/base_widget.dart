@@ -26,15 +26,15 @@ class BaseWidget extends ConsumerStatefulWidget {
 }
 
 class _BaseWidgetState extends ConsumerState<BaseWidget> {
-  double xPosition = 0;
-  double yPosition = 0;
   double rotation = 0;
   double width = 100;
   double height = 100;
   double lastRotation = 0;
   double endRotation = 0;
   bool currentlySelected = false;
-  double _scale = 1.0;
+  double newScale = 1;
+  double oldScale = 1;
+  Offset dxy = Offset(0, 0);
 
   final degreesOverPi = (180 / math.pi);
 
@@ -82,66 +82,62 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
       setState(() => currentlySelected = false);
     }
     return Positioned(
-      left: xPosition,
-      top: yPosition,
-      child: Transform.scale(
-        scale: _scale,
-        child: Transform.rotate(
-          alignment: FractionalOffset.center,
-          angle: rotation,
-          child: GestureDetector(
-            onTap: () {
-              setState(() {
-                debugPrint("Tapped");
-                currentlySelected = !currentlySelected;
-              });
-              if (selectedOn && currentlySelected) {
-                ref.read(selectedProvider).addSelected(widget.id);
-              }
-            },
-            onScaleUpdate: (details) {
-              int count = details.pointerCount;
-              double direction = details.focalPoint.direction;
-              if (count > 1) {
+      left: dxy.dx,
+      top: dxy.dy,
+      child: Transform.translate(
+        offset: dxy,
+        child: Transform.scale(
+          scale: newScale,
+          origin: const Offset(0.0, 0.0),
+          child: Transform.rotate(
+            alignment: FractionalOffset.center,
+            angle: ((rotation * 180) / math.pi) / 24,
+            child: GestureDetector(
+              onTap: () {
                 setState(() {
-                  debugPrint("Direction $direction");
-                  _scale = details.scale;
-                  rotation = (details.rotation * degreesOverPi) / 6;
-                  debugPrint('Rot = $rotation');
-                  if (details.focalPointDelta.dy != 0 ||
-                      details.focalPointDelta.dx != 0) {
-                    yPosition += details.focalPointDelta.dy * _scale.abs();
-                    xPosition += details.focalPointDelta.dx * _scale.abs();
-                    debugPrint(
-                        "Scale $_scale DX = ${(details.focalPointDelta.dx).toString()} xpos = $xPosition");
-                    debugPrint(
-                        'Scale $_scale Dy =  ${(details.focalPointDelta.dy).toString()} ypos = $yPosition');
-                  }
+                  debugPrint("Tapped");
+                  currentlySelected = !currentlySelected;
                 });
-              } else if (count == 1) {
+                if (selectedOn && currentlySelected) {
+                  ref.read(selectedProvider).addSelected(widget.id);
+                }
+              },
+              onScaleUpdate: (details) {
+                int count = details.pointerCount;
+                if (count > 1) {
+                  setState(() {
+                    newScale = oldScale * details.scale;
+                    rotation = details.rotation;
+                    if (details.focalPointDelta.dy != 0 ||
+                        details.focalPointDelta.dx != 0) {
+                      dxy = dxy + details.focalPointDelta;
+                    }
+                  });
+                } else if (count == 1) {
+                  setState(() {
+                    dxy = dxy + details.focalPointDelta;
+                  });
+                }
+              },
+              onScaleStart: (ScaleStartDetails details) {
                 setState(() {
-                  debugPrint("Direction $direction");
-                  debugPrint(
-                      "Scale $_scale DX = ${(details.focalPointDelta.dx).toString()} xpos = $xPosition");
-                  debugPrint(
-                      'Scale $_scale Dy =  ${(details.focalPointDelta.dy).toString()} ypos = $yPosition');
-                  yPosition += details.focalPointDelta.dy;
-                  xPosition += details.focalPointDelta.dx;
+                  oldScale = newScale;
                 });
-              }
-            },
-            onLongPress: () {
-              longPressed();
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: selectedOn && currentlySelected
-                      ? Colors.black.withOpacity(.5)
-                      : Colors.transparent,
+              },
+              onLongPress: () {
+                longPressed();
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: selectedOn && currentlySelected
+                        ? Colors.black.withOpacity(.5)
+                        : Colors.transparent,
+                  ),
                 ),
+                child:
+                    SvgPicture.string('${svgContainer(width, height)}$shape'),
               ),
-              child: SvgPicture.string('${svgContainer(width, height)}$shape'),
             ),
           ),
         ),
