@@ -38,9 +38,16 @@ class EditorView extends ConsumerWidget {
                 maxScale: 7,
                 minScale: .4,
                 scaleFactor: 100,
-                child: Stack(
-                  children: listProvider,
-                ),
+                child: Stack(children: [
+                  Positioned(
+                    top: 0,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: Stack(
+                      children: listProvider,
+                    ),
+                  )
+                ]),
               ),
             ),
             // const Expanded(child: CanvasView()),

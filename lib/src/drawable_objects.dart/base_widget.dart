@@ -31,10 +31,12 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
   double height = 100;
   double lastRotation = 0;
   double endRotation = 0;
+  double distance = 1;
   bool currentlySelected = false;
   double newScale = 1;
   double oldScale = 1;
-  Offset dxy = Offset(0, 0);
+  Offset dxy = Offset.zero;
+  Offset start = Offset.zero;
 
   final degreesOverPi = (180 / math.pi);
 
@@ -50,7 +52,8 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
             '<circle cx="50" cy="50" r="50" fill="red" fill-opacity=".5"/></svg>';
         break;
       case ShapeNames.rectangle:
-        shape = '<rect x="0" y="0"  rx="2" width="100" height="100"/></svg>';
+        shape =
+            '<rect x="0" y="0"  rx="2" width="100" height="100"/><circle cx="10" cy="10" r="10" fill="white"/></svg>';
         break;
       case ShapeNames.ellipse:
         shape = '<ellipse cx="50" cy="50" rx="50" ry="100"/></svg>';
@@ -81,63 +84,66 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
     if (!selectedOn) {
       setState(() => currentlySelected = false);
     }
-    return Positioned(
-      left: dxy.dx,
-      top: dxy.dy,
-      child: Transform.translate(
-        offset: dxy,
+    return Transform.translate(
+      offset: Offset(dxy.dx, dxy.dy),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: selectedOn && currentlySelected
+                ? Colors.black.withOpacity(.5)
+                : Colors.transparent,
+          ),
+        ),
         child: Transform.scale(
           scale: newScale,
           origin: const Offset(0.0, 0.0),
-          child: Transform.rotate(
-            alignment: FractionalOffset.center,
-            angle: ((rotation * 180) / math.pi) / 24,
-            child: GestureDetector(
-              onTap: () {
+          child: GestureDetector(
+            // behavior: HitTestBehavior.translucent,
+            onTap: () {
+              setState(() {
+                debugPrint("Tapped");
+                currentlySelected = !currentlySelected;
+              });
+              if (selectedOn && currentlySelected) {
+                ref.read(selectedProvider).addSelected(widget.id);
+              }
+            },
+            onScaleUpdate: (details) {
+              int count = details.pointerCount;
+              if (count > 1) {
                 setState(() {
-                  debugPrint("Tapped");
-                  currentlySelected = !currentlySelected;
+                  newScale = oldScale * details.scale;
+                  rotation = ((details.rotation * 180) / math.pi) / 24;
+                  debugPrint(rotation.toString());
+                  if (details.focalPointDelta.dy != 0 ||
+                      details.focalPointDelta.dx != 0) {
+                    dxy += details.focalPointDelta;
+                  }
                 });
-                if (selectedOn && currentlySelected) {
-                  ref.read(selectedProvider).addSelected(widget.id);
-                }
-              },
-              onScaleUpdate: (details) {
-                int count = details.pointerCount;
-                if (count > 1) {
-                  setState(() {
-                    newScale = oldScale * details.scale;
-                    rotation = details.rotation;
-                    if (details.focalPointDelta.dy != 0 ||
-                        details.focalPointDelta.dx != 0) {
-                      dxy = dxy + details.focalPointDelta;
-                    }
-                  });
-                } else if (count == 1) {
-                  setState(() {
-                    dxy = dxy + details.focalPointDelta;
-                  });
-                }
-              },
-              onScaleStart: (ScaleStartDetails details) {
+              } else if (count == 1) {
                 setState(() {
-                  oldScale = newScale;
+                  dxy += details.focalPointDelta;
                 });
-              },
-              onLongPress: () {
-                longPressed();
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: selectedOn && currentlySelected
-                        ? Colors.black.withOpacity(.5)
-                        : Colors.transparent,
-                  ),
-                ),
-                child:
-                    SvgPicture.string('${svgContainer(width, height)}$shape'),
-              ),
+              }
+            },
+            onScaleStart: (ScaleStartDetails details) {
+              start = dxy;
+              // debugPrint('Onstart: ${dxy.toString()}');
+              setState(() {
+                oldScale = newScale;
+              });
+            },
+            onScaleEnd: (dets) {
+              // debugPrint(
+              //     'OnEnd: ${dxy.toString()} \n Start $start \n Diff ${dxy - start}');
+            },
+            onLongPress: () {
+              return;
+            },
+            child: Transform.rotate(
+              alignment: FractionalOffset.center,
+              angle: rotation,
+              child: SvgPicture.string('${svgContainer(width, height)}$shape'),
             ),
           ),
         ),
@@ -148,6 +154,4 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
   String svgContainer(double w, double h) {
     return '<svg width="$w" height="$h" version="1.1" xmlns="http://www.w3.org/2000/svg">';
   }
-
-  longPressed() {}
 }
