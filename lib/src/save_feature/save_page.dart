@@ -17,14 +17,56 @@ class SaveView extends ConsumerWidget {
             crossAxisCount: 3,
           ),
           children: [
-            SizedBox(
-              height: 100,
-              width: 100,
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.grey,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                height: 100,
+                width: 100,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.grey,
+                  ),
+                  child: const Text(""),
                 ),
-                child: const Text(""),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                height: 100,
+                width: 100,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.grey,
+                  ),
+                  child: const Text(""),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                height: 100,
+                width: 100,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.grey,
+                  ),
+                  child: const Text(""),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                height: 100,
+                width: 100,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.grey,
+                  ),
+                  child: const Text(""),
+                ),
               ),
             ),
           ],

@@ -42,8 +42,7 @@ class _BaseWidgetState extends ConsumerState<BaseWidget> {
   void initState() {
     switch (widget.shape) {
       case ShapeNames.circle:
-        shape =
-            '<circle cx="50" cy="50" r="50" fill="red" fill-opacity=".5"/></svg>';
+        shape = '<circle cx="50" cy="50" r="50" fill="black"/></svg>';
         break;
       case ShapeNames.rectangle:
         shape = '<rect x="0" y="0"  rx="2" width="100" height="100"/></svg>';
